@@ -16,8 +16,9 @@ def play_beep(sound_type, beep_enabled):
         beepy.beep(sound_type)
 
 def record_speech(silence_threshold=500, silence_duration=10, beep_enabled=True):
-    notification.notify(title="Speech-to-Text", message="Start Speaking...", app_name="Speech-to-Text")
-    
+    icon = os.path.join(os.path.dirname(__file__), 'icons', 'speaking.png')
+    notification.notify(title="Speech-to-Text", message="Start Speaking...", app_icon=icon, app_name="Speech-to-Text")
+
     # Initialize PyAudio and Recorder
     audio = pyaudio.PyAudio()
     stream = audio.open(format=pyaudio.paInt16, channels=1, rate=44100, input=True, frames_per_buffer=1024)
@@ -56,7 +57,8 @@ def record_speech(silence_threshold=500, silence_duration=10, beep_enabled=True)
     return temp_file_path
 
 def transcribe_speech(file_path, beep_enabled=True):
-    notification.notify(title="Speech-to-Text", message="Processing recording...", app_name="Speech-to-Text")
+    icon = os.path.join(os.path.dirname(__file__), 'icons', 'silence.png')
+    notification.notify(title="Speech-to-Text", message="Processing recording...", app_icon=icon, app_name="Speech-to-Text")
     model = whisper.load_model("base")
     result = model.transcribe(file_path)
     return result["text"]
@@ -86,5 +88,5 @@ type_text(transcribed_text)
 
 # Step 5: Play end beep and show notification
 play_beep(sound_type=1, beep_enabled=args.beep)
-notification.notify(title="Speech-to-Text", message="Transcription complete!", app_name="Speech-to-Text")
-
+icon = os.path.join(os.path.dirname(__file__), 'icons', 'thinking.png')
+notification.notify(title="Speech-to-Text", message="Transcription complete!", app_icon=icon, app_name="Speech-to-Text")
