@@ -1,9 +1,9 @@
 import whisper
 import pyaudio
 import wave
-import pyautogui
 import audioop
 import time
+from pynput.keyboard import Key, Controller
 from plyer import notification
 import argparse
 from termcolor import colored
@@ -64,7 +64,8 @@ def transcribe_speech(file_path, beep_enabled=True):
     return result["text"]
 
 def type_text(text):
-    pyautogui.write(text)
+    keyboard = Controller()
+    keyboard.type(text)
 
 # Argument parsing
 parser = argparse.ArgumentParser(description="Speech-to-Text with Silence Threshold")

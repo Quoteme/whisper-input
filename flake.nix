@@ -18,7 +18,7 @@
               openai-whisper
               pyaudio
               playsound
-              pyautogui
+              pynput
               dbus-python
               # pydbus
               plyer
