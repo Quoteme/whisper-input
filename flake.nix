@@ -12,7 +12,7 @@
         pkgs = import nixpkgs {
           inherit system;
         };
-        dependencies = [
+        myPython =
           (pkgs.python310.withPackages
             (ps: with ps; [
               openai-whisper
@@ -38,10 +38,19 @@
                     ];
                   }
               )
-            ]))
+            ]));
+        dependencies = [
+          myPython
         ];
       in
-      {
+      rec {
+        defaultApp = apps.whisper-input;
+
+        apps.whisper-input = {
+          type = "app";
+          program = "${defaultPackage}/bin/whisper-input";
+        };
+
         devShells.default = pkgs.mkShell {
           buildInputs = [ dependencies ];
         };
@@ -49,7 +58,7 @@
         defaultPackage = pkgs.stdenv.mkDerivation {
           name = "defaultPackage";
           buildInputs = dependencies;
-          src = ./.;
+          src = ./src;
           dontBuild = true;
           installPhase = ''
             mkdir -p $out/bin
@@ -57,7 +66,7 @@
             # add a `whisper-input` script, which just calls `python3 whisper-input.py`
             touch $out/bin/whisper-input
             echo "#!${pkgs.stdenv.shell}" > $out/bin/whisper-input
-            echo "python3 $out/whisper-input.py" >> $out/bin/whisper-input
+            echo "${myPython}/bin/python3 $out/whisper-input.py" >> $out/bin/whisper-input
             chmod +x $out/bin/whisper-input
           '';
         };
